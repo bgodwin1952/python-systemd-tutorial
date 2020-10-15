@@ -8,7 +8,7 @@ When you feel lost or need the gritty details, head over to the [systemd documen
 
 Aside from this `README.md` file, this repository contains a basic implementation of a Python service consisting of a Python script (`python_demo_service.py`) and a systemd unit file (`python_demo_service.service`).
 
-The systemd version we're going to work with is 229, so if you're using a different version (see `systemctl --version`) then check the systemd documentation for things that may differ.
+The systemd version we're going to work with is v243.9-1.fc31, so if you're using a different version (see `systemctl --version`) then check the systemd documentation for things that may differ.
 
 
 ## System and User Services
