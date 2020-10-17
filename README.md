@@ -79,11 +79,15 @@ We can check that our service is running:
 
     $ systemctl --user status python_demo_service
     ● python_demo_service.service - Python Demo Service
-       Loaded: loaded (/home/torf/.config/systemd/user/python_demo_service.service; static; vendor preset: enabled)
-       Active: active (running) since So 2018-12-30 17:46:03 CET; 2min 35s ago
-     Main PID: 26218 (python)
+       Loaded: loaded (/home/louis/.config/systemd/user/python_demo_service.service; static; vendor preset: enabled)
+       Active: active (running) since Sat 2020-10-17 02:56:18 PDT; 11s ago
+     Main PID: 491048 (python)
+        Tasks: 1 (limit: 19123)
+       Memory: 3.6M
+          CPU: 24ms
        CGroup: /user.slice/user-1000.slice/user@1000.service/python_demo_service.service
-               └─26218 /usr/bin/python /home/torf/projects/python-systemd-tutorial/python_demo_service.py
+               └─491048 python /home/louis/prgms/Services/python_demo_service.py
+
 
 In the first line of the output we can see the `Description` from our unit file. The output also tells us the state of our service and the PID it is running as.
 
@@ -92,8 +96,13 @@ Obviously our service can also be stopped:
     $ systemctl --user stop python_demo_service
     $ systemctl --user status python_demo_service
     ● python_demo_service.service - Python Demo Service
-       Loaded: loaded (/home/torf/.config/systemd/user/python_demo_service.service)
+       Loaded: loaded (/home/louis/.config/systemd/user/python_demo_service.service; static; vendor preset: enabled)
        Active: inactive (dead)
+     
+     Oct 17 02:56:53 Alnilam-F31 systemd[54397]: Stopping Python Demo Service...
+     Oct 17 02:56:53 Alnilam-F31 systemd[54397]: python_demo_service.service: Succeeded.
+     Oct 17 02:56:53 Alnilam-F31 systemd[54397]: Stopped Python Demo Service.
+
 
 
 ### STDOUT and STDERR
@@ -111,14 +120,24 @@ As always when you change your unit file you need to tell systemd to reload its 
     $ systemctl --user daemon-reload
     $ systemctl --user restart python_demo_service
 
-The output from our script should now show up in systemd's logs, which by default are redirected to syslog:
+The output from our script should now show up in systemd's logs.  The standard way to display your service's output is via
 
-    $ grep 'Python Demo Service' /var/log/syslog
-    Dec 30 18:05:34 leibniz python[26218]: Hello from the Python Demo Service
+    $ journalctl --user-unit python_demo_service | tail
+    Oct 17 02:34:36 Alnilam-F31 systemd[54397]: Started Python Demo Service.
+    Oct 17 02:34:36 Alnilam-F31 python_demo_service.py[488997]: Hello from the Python Demo Service
+    Oct 17 02:34:41 Alnilam-F31 python_demo_service.py[488997]: Hello from the Python Demo Service
+    Oct 17 02:34:46 Alnilam-F31 python_demo_service.py[488997]: Hello from the Python Demo Service
+    Oct 17 02:34:51 Alnilam-F31 python_demo_service.py[488997]: Hello from the Python Demo Service
+    Oct 17 02:34:56 Alnilam-F31 python_demo_service.py[488997]: Hello from the Python Demo Service
+    Oct 17 02:35:01 Alnilam-F31 python_demo_service.py[488997]: Hello from the Python Demo Service
+    Oct 17 02:35:05 Alnilam-F31 systemd[54397]: Stopping Python Demo Service...
+    Oct 17 02:35:05 Alnilam-F31 systemd[54397]: python_demo_service.service: Succeeded.
+    Oct 17 02:35:05 Alnilam-F31 systemd[54397]: Stopped Python Demo Service.
 
-Another way to display your service's output is via
+The output from our script should now show up in systemd's logs.  The standard way to display your service's output is via
 
-    $ journalctl --user-unit python_demo_service
+    $ journalctl --user-unit python_demo_service | tail
+    
 
 There are many more possible configurations for logging. For example, you can redirect STDOUT and STDERR to files instead. See [systemd.exec] for details.
 
